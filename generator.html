@@ -28,7 +28,7 @@ await loadKeys();
 
 const onScanSuccess = (decodedText) => {
 if (validated) return; // già valido
-if (decodedText === QR1_EXPECTED) {
+if (decodedText === QR1_SSS_GEN) {
 validated = true;
 updateStatus('QR1 valido. Ora puoi generare un codice.');
 document.getElementById('btnGen').disabled = false;
