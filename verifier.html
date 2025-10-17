@@ -45,7 +45,7 @@ await loadCoords();
 
 const onScanSuccess = (decodedText) => {
 if (validated) return;
-if (decodedText === QR2_EXPECTED) {
+if (decodedText === QR2_SSS_VER) {
 validated = true;
 updateStatus('QR2 valido. Ora inserisci il codice e premi verifica.');
 tryShow();
@@ -78,4 +78,5 @@ showCoord(utm);
 });
 </script>
 </body>
+
 </html>
