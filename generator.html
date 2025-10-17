@@ -1,0 +1,72 @@
+<!doctype html>
+}
+}
+
+
+// Genera codice selezionando una chiave già presente in coords.json (per garantire corrispondenza)
+function pickRandomCode() {
+if (!keys.length) return null;
+const idx = Math.floor(Math.random() * keys.length);
+return keys[idx];
+}
+
+
+function updateStatus(msg) {
+document.getElementById('status').textContent = msg;
+}
+
+
+function showCode(code) {
+document.getElementById('codeBox').textContent = code || '—';
+}
+
+
+// Avvio scanner QR
+window.addEventListener('load', async () => {
+await loadKeys();
+
+
+const onScanSuccess = (decodedText) => {
+if (validated) return; // già valido
+if (decodedText === QR1_EXPECTED) {
+validated = true;
+updateStatus('QR1 valido. Ora puoi generare un codice.');
+document.getElementById('btnGen').disabled = false;
+scanner.clear().catch(()=>{});
+} else {
+updateStatus('QR non valido. Riprova.');
+}
+};
+
+
+const onScanFailure = (error) => { /* silenzioso */ };
+
+
+const scanner = new Html5QrcodeScanner('reader', { fps: 10, qrbox: 250, rememberLastUsedCamera: true });
+scanner.render(onScanSuccess, onScanFailure);
+
+
+document.getElementById('btnGen').addEventListener('click', () => {
+if (!validated) return;
+const code = pickRandomCode();
+if (!code) {
+showCode('Nessun codice disponibile in coords.json');
+return;
+}
+// opzionale: se vuoi generare random puro (max 10), sostituisci con generateRandom(8,10)
+showCode(code);
+});
+});
+
+
+// Alternativa: generazione alfanumerica casuale (max 10)
+function generateRandom(minLen = 8, maxLen = 10) {
+const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // senza 0/O/1/I per leggibilità
+const len = Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen;
+let out = '';
+for (let i = 0; i < len; i++) out += alphabet[Math.floor(Math.random() * alphabet.length)];
+return out;
+}
+</script>
+</body>
+</html>
