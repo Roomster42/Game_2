@@ -1,4 +1,33 @@
 <!doctype html>
+Copia il codice e utilizzalo nella pagina <a href="verifier.html">verifier.html</a>.
+</p>
+</div>
+
+
+<script>
+// === Parametri configurabili ===
+const QR1_EXPECTED = "GEN_KEY_1"; // testo che deve contenere il QR1 (fisso)
+const COORDS_JSON = "./coords.json"; // percorso al file esterno
+
+
+document.getElementById('qr1-hint').textContent = QR1_EXPECTED;
+
+
+// Stato
+let keys = [];
+let validated = false;
+
+
+async function loadKeys() {
+try {
+const res = await fetch(COORDS_JSON, { cache: 'no-store' });
+if (!res.ok) throw new Error('Impossibile caricare coords.json');
+const data = await res.json();
+keys = Object.keys(data || {});
+document.getElementById('loadedInfo').textContent = keys.length ? `${keys.length} codici disponibili` : 'Nessun codice in coords.json';
+} catch (e) {
+document.getElementById('loadedInfo').textContent = 'Errore nel caricamento di coords.json';
+console.error(e);
 }
 }
 
@@ -28,7 +57,7 @@ await loadKeys();
 
 const onScanSuccess = (decodedText) => {
 if (validated) return; // già valido
-if (decodedText === QR1_SSS_GEN) {
+if (decodedText === QR1_EXPECTED) {
 validated = true;
 updateStatus('QR1 valido. Ora puoi generare un codice.');
 document.getElementById('btnGen').disabled = false;
